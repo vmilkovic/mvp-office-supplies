@@ -3,17 +3,22 @@
         "defaults"
     ],
     "devDependencies": {
-        "@symfony/webpack-encore": "^0.30.0",
-        "bootstrap": "^4.4.1",
-        "core-js": "^3.0.0",
-        "eslint": "^6.7.2",
-        "eslint-config-airbnb-base": "^14.0.0",
-        "eslint-plugin-import": "^2.19.1",
-        "eslint-plugin-vue": "^6.0.1",
-        "regenerator-runtime": "^0.13.2",
-        "sass": "^1.29.0",
-        "sass-loader": "^8.0.0",
-        "webpack-notifier": "^1.6.0"
+        "@babel/core": "^7.13.15",
+        "@symfony/webpack-encore": "^1.1.2",
+        "bootstrap": "^4.6.0",
+        "core-js": "^3.10.1",
+        "eslint": "^7.24.0",
+        "eslint-config-airbnb-base": "^14.2.1",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-vue": "^7.9.0",
+        "file-loader": "^6.0.0",
+        "regenerator-runtime": "^0.13.7",
+        "sass": "^1.32.10",
+        "sass-loader": "^11.0.1",
+        "vue": "^2.5",
+        "vue-loader": "^15",
+        "vue-template-compiler": "^2.6.12",
+        "webpack-notifier": "^1.13.0"
     },
     "license": "UNLICENSED",
     "private": true,
@@ -23,5 +28,6 @@
         "watch": "encore dev --watch",
         "build": "encore production --progress",
         "lint": "node_modules/.bin/eslint assets/** --ignore-pattern *.scss --ignore-pattern *.gif --ignore-pattern *.png"
-    }
+    },
+    "dependencies": {}
 }
