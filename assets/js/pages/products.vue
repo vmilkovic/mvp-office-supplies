@@ -1,11 +1,14 @@
 <template>
     <div class="container-fluid">
         <div class="row">
-            <aside class="col-xs-12 col-3">
-                <sidebar-component />
+            <aside :class="asideClass">
+                <sidebar-component
+                    :collapsed="sidebarCollapsed"
+                    @toggle-collapsed="toggleSidebarCollapsed"
+                />
             </aside>
 
-            <div class="col-xs-12 col-9">
+            <div :class="contentClass">
                 <catalog-component />
             </div>
         </div>
@@ -24,8 +27,21 @@ export default {
     },
     data() {
         return {
-            legend: "Shipping takes 10-12 weeks, and products probably won't work",
+            sidebarCollapsed: false,
         };
+    },
+    computed: {
+        asideClass() {
+            return this.sidebarCollapsed ? 'aside-collapsed' : 'col-xs-12 col-3';
+        },
+        contentClass() {
+            return this.sidebarCollapsed ? 'col-xs-12 col-11' : 'col-xs-12 col-9';
+        },
+    },
+    methods: {
+        toggleSidebarCollapsed() {
+            this.sidebarCollapsed = !this.sidebarCollapsed;
+        },
     },
 };
 </script>

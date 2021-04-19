@@ -1,6 +1,6 @@
 <template>
     <div
-        :class="componentClass"
+        :class="[$style.component, 'p-3', 'mb-5']"
     >
         <div v-show="!collapsed">
             <h5 class="text-center">
@@ -15,13 +15,13 @@
                     >All Products</a>
                 </li>
                 <li
-                    v-for="(category, index) in categories"
-                    :key="index"
+                    v-for="category in categories"
+                    :key="category['@id']"
                     class="nav-item"
                 >
                     <a
                         class="nav-link"
-                        :href="category.link"
+                        :href="`/category/${category.id}`"
                     >{{ category.name }}</a>
                 </li>
             </ul>
@@ -31,7 +31,7 @@
         <div class="d-flex justify-content-end">
             <button
                 class="btn btn-secondary btn-sm"
-                @click="toggleCollapsed"
+                @click="$emit('toggle-collapsed')"
                 v-text="collapsed ? '>>' : '<< Collapse'"
             />
         </div>
@@ -39,42 +39,25 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     name: 'Sidebar',
+    props: {
+        collapsed: {
+            type: Boolean,
+            require: true,
+        },
+    },
     data() {
         return {
-            collapsed: false,
-            categories: [
-                {
-                    name: 'Dot Matrix Printers',
-                    link: '#',
-                },
-                {
-                    name: 'Iomega Zip Drives',
-                    link: '#',
-                },
-            ],
+            categories: [],
         };
     },
-    computed: {
-        /**
-         * Computes the component classes depending on collapsed state
-         * @returns string[]
-         */
-        componentClass() {
-            const classes = [this.$style.component, 'p-3', 'mb-5'];
+    async created() {
+        const response = await axios.get('/api/categories');
 
-            if (this.collapsed) {
-                classes.push(this.$style.collapsed);
-            }
-
-            return classes;
-        },
-    },
-    methods: {
-        toggleCollapsed() {
-            this.collapsed = !this.collapsed;
-        },
+        this.categories = response.data['hydra:member'];
     },
 };
 </script>
@@ -84,10 +67,6 @@ export default {
 
 .component {
     @include light-component;
-
-    &.collapsed {
-        width: 70px;
-    }
 
     ul {
         li a:hover {
