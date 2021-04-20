@@ -7,10 +7,15 @@
                 Categories
             </h5>
 
+            <loading v-show="loading" />
+
             <ul class="nav flex-column mb4">
                 <li class="nav-item">
                     <a
-                        class="nav-link"
+                        :class="{
+                            'nav-link': true,
+                            'selected': currentCategoryId === null,
+                        }"
                         href="/"
                     >All Products</a>
                 </li>
@@ -20,7 +25,10 @@
                     class="nav-item"
                 >
                     <a
-                        class="nav-link"
+                        :class="{
+                            'nav-link': true,
+                            'selected': category['@id'] === currentCategoryId,
+                        }"
                         :href="`/category/${category.id}`"
                     >{{ category.name }}</a>
                 </li>
@@ -39,14 +47,22 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { fetchCategories } from '@/services/categories-service';
+import Loading from '@/components/loading';
 
 export default {
     name: 'Sidebar',
+    components: {
+        Loading,
+    },
     props: {
         collapsed: {
             type: Boolean,
             require: true,
+        },
+        currentCategoryId: {
+            type: String,
+            default: null,
         },
     },
     data() {
@@ -54,8 +70,13 @@ export default {
             categories: [],
         };
     },
+    computed: {
+        loading() {
+            return this.categories.length === 0;
+        },
+    },
     async created() {
-        const response = await axios.get('/api/categories');
+        const response = await fetchCategories();
 
         this.categories = response.data['hydra:member'];
     },
@@ -65,12 +86,16 @@ export default {
 <style lang="scss" module>
 @import '~styles/components/light-component';
 
-.component {
+.component :global {
     @include light-component;
 
     ul {
         li a:hover {
             background: $blue-component-link-hover;
+        }
+
+         li a.selected {
+            background: $light-component-border;
         }
     }
 }

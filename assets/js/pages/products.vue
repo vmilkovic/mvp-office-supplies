@@ -2,28 +2,30 @@
     <div class="container-fluid">
         <div class="row">
             <aside :class="asideClass">
-                <sidebar-component
+                <sidebar
                     :collapsed="sidebarCollapsed"
+                    :current-category-id="currentCategoryId"
                     @toggle-collapsed="toggleSidebarCollapsed"
                 />
             </aside>
 
             <div :class="contentClass">
-                <catalog-component />
+                <catalog :current-category-id="currentCategoryId" />
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import CatalogComponent from '@/components/catalog';
-import SidebarComponent from '@/components/sidebar';
+import Catalog from '@/components/catalog';
+import Sidebar from '@/components/sidebar';
+import { getCurrentCategoryId } from '@/services/page-context';
 
 export default {
     name: 'Products',
     components: {
-        CatalogComponent,
-        SidebarComponent,
+        Catalog,
+        Sidebar,
     },
     data() {
         return {
@@ -36,6 +38,9 @@ export default {
         },
         contentClass() {
             return this.sidebarCollapsed ? 'col-xs-12 col-11' : 'col-xs-12 col-9';
+        },
+        currentCategoryId() {
+            return getCurrentCategoryId();
         },
     },
     methods: {
