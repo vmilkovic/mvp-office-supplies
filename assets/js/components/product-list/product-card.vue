@@ -13,7 +13,7 @@
             </div>
             <div class="p-2 my-3 d-md-flex justify-content-between">
                 <p class="p-0 d-inline">
-                    <strong>${{ product.price }}</strong>
+                    <strong>${{ price }}</strong>
                 </p>
                 <button class="btn btn-info btn-sm">
                     View Product
@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import formatPrice from '@/helpers/format-price';
+
 export default {
     name: 'ProductCard',
     props: {
@@ -42,7 +44,7 @@ export default {
          * @returns {string}
          */
         price() {
-            return (this.product.price / 100).toLocaleString('en-US', { minimumFractionDigits: 2 });
+            return formatPrice(this.product.price);
         },
     },
 };

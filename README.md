@@ -2,7 +2,7 @@
 
 ## Symfonycast
 
-- [ ] The Delightful World of Vue.js
+- [x] The Delightful World of Vue.js
 
 ## Setup
 

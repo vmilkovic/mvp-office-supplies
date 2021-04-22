@@ -8,7 +8,7 @@
                 />
             </div>
             <div class="col-9">
-                <search-bar />
+                <search-bar @search-products="onSearchProducts" />
             </div>
         </div>
 
@@ -53,23 +53,43 @@ export default {
             products: [],
             loading: false,
             legend: "Shipping takes 10-12 weeks, and products probably won't work",
+            searchTerm: '',
         };
     },
-    async created() {
-        this.loading = true;
+    watch: {
+        currentCategoryId() {
+            this.loadProducts(null);
+        },
+    },
+    created() {
+        this.loadProducts(null);
+    },
+    methods: {
+        /**
+         * Handles a change in the searchTerm provided by the search bar and fetches new products
+         *
+         * @param {string} term
+         */
+        onSearchProducts({ term }) {
+            this.searchTerm = term;
+            this.loadProducts();
+        },
+        async loadProducts() {
+            this.loading = true;
 
-        let response;
-        try {
-            response = await fetchProducts(this.currentCategoryId);
+            let response;
+            try {
+                response = await fetchProducts(this.currentCategoryId, this.searchTerm);
 
-            this.loading = false;
-        } catch (e) {
-            this.loading = false;
+                this.loading = false;
+            } catch (e) {
+                this.loading = false;
 
-            return;
-        }
+                return;
+            }
 
-        this.products = response.data['hydra:member'];
+            this.products = response.data['hydra:member'];
+        },
     },
 };
 </script>
