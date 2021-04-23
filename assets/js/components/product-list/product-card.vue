@@ -2,20 +2,28 @@
     <div class="col-xs-12 col-6 mb-2 pb-2">
         <div :class="$style['product-box']">
             <div :class="$style.image">
-                <img
-                    :alt="product.name"
-                    :src="product.image"
-                    class="d-block mb-2"
-                >
+                <a :href="productUrl">
+                    <img
+                        :alt="product.name"
+                        :src="product.image"
+                        class="d-block mb-2"
+                    >
+                </a>
                 <h3 class="font-weight-bold mb-2 px-2">
-                    {{ product.name }}
+                    <a
+                        :href="productUrl"
+                        v-text="product.name"
+                    />
                 </h3>
             </div>
             <div class="p-2 my-3 d-md-flex justify-content-between">
                 <p class="p-0 d-inline">
                     <strong>${{ price }}</strong>
                 </p>
-                <button class="btn btn-info btn-sm">
+                <button
+                    class="btn btn-info btn-sm"
+                    @click="goToProduct"
+                >
                     View Product
                 </button>
             </div>
@@ -45,6 +53,14 @@ export default {
          */
         price() {
             return formatPrice(this.product.price);
+        },
+        productUrl() {
+            return `/product/${this.product.id}`;
+        },
+    },
+    methods: {
+        goToProduct() {
+            window.location = this.productUrl;
         },
     },
 };
