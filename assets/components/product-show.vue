@@ -72,7 +72,7 @@ import Loading from '@/components/loading';
 import TitleComponent from '@/components/title';
 import formatPrice from '@/helpers/format-price';
 import { fetchOneProduct } from '@/services/products-service';
-import { addItemToCart, fetchCart, getCartTotalItems } from '@/services/cart-service';
+import ShoppingCartMixin from '@/mixins/get-shopping-cart';
 
 export default {
     name: 'ProductShow',
@@ -81,6 +81,7 @@ export default {
         Loading,
         TitleComponent,
     },
+    mixins: [ShoppingCartMixin],
     props: {
         productId: {
             type: String,
@@ -90,10 +91,7 @@ export default {
     data() {
         return {
             product: null,
-            addToCartLoading: false,
-            addToCartSuccess: false,
             loading: true,
-            cart: null,
             quantity: 1,
             selectedColorId: null,
         };
@@ -108,10 +106,6 @@ export default {
         },
     },
     async created() {
-        fetchCart().then((cart) => {
-            this.cart = cart;
-        });
-
         try {
             this.product = (await fetchOneProduct(this.productId)).data;
         } finally {
@@ -119,29 +113,11 @@ export default {
         }
     },
     methods: {
-        async addToCart() {
-            if (this.product.colors.length && this.selectedColorId == null) {
-                alert('Please select a color first!');
-
-                return;
-            }
-
-            this.addToCartLoading = true;
-            this.addToCartSuccess = false;
-
-            await addItemToCart(this.cart, {
-                product: this.product['@id'],
-                color: this.selectedColorId,
-                quantity: this.quantity,
-            });
-
-            this.addToCartLoading = false;
-            this.addToCartSuccess = true;
-
-            document.getElementById('js-shopping-cart-items').innerHTML = getCartTotalItems(this.cart).toString();
-        },
         updateSelectedColor(iri) {
             this.selectedColorId = iri;
+        },
+        addToCart() {
+            this.addProductToCart(this.product, this.selectedColorId, this.quantity);
         },
     },
 };

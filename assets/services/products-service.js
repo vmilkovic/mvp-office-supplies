@@ -32,3 +32,21 @@ export function fetchProducts(categoryIri, searchTerm) {
 export function fetchOneProduct(iri) {
     return axios.get(iri);
 }
+
+/**
+ * Retrieves a set of products identified by an array of IRIs
+ *
+ * @param {string[]} ids
+ * @return {Promise}
+ */
+export function fetchProductsById(ids) {
+    if (!ids.length) {
+        return Promise.resolve({ data: { 'hydra:member': [] } });
+    }
+    return axios.get(
+        '/api/products',
+        {
+            params: { id: ids },
+        },
+    );
+}
