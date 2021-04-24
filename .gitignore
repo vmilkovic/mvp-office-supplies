@@ -9,6 +9,7 @@
 ###< symfony/framework-bundle ###
 
 /public/uploads
+.vscode
 
 ###> symfony/webpack-encore-bundle ###
 /node_modules/

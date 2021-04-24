@@ -22,3 +22,13 @@ export function fetchProducts(categoryIri, searchTerm) {
         params,
     });
 }
+
+/**
+ * Get a product from API
+ *
+ * @param {string} iri
+ * @returns {Promise}
+ */
+export function fetchOneProduct(iri) {
+    return axios.get(iri);
+}
