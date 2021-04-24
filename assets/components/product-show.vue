@@ -35,8 +35,10 @@
                         <div class="d-flex align-items-center justify-content-center">
                             <color-selector
                                 v-if="product.colors.length !== 0"
+                                @color-selected="updateSelectedColor"
                             />
                             <input
+                                v-model.number="quantity"
                                 class="form-control mx-3"
                                 type="number"
                                 min="1"
@@ -47,6 +49,14 @@
                                 @click="addToCart"
                             >
                                 Add to Cart
+                                <i
+                                    v-show="addToCartLoading"
+                                    class="fas fa-spinner fa-spin"
+                                />
+                                <i
+                                    v-show="addToCartSuccess"
+                                    class="fas fa-check"
+                                />
                             </button>
                         </div>
                     </div>
@@ -62,7 +72,7 @@ import Loading from '@/components/loading';
 import TitleComponent from '@/components/title';
 import formatPrice from '@/helpers/format-price';
 import { fetchOneProduct } from '@/services/products-service';
-import { addItemToCart, fetchCart } from '@/services/cart-service';
+import { addItemToCart, fetchCart, getCartTotalItems } from '@/services/cart-service';
 
 export default {
     name: 'ProductShow',
@@ -80,8 +90,12 @@ export default {
     data() {
         return {
             product: null,
+            addToCartLoading: false,
+            addToCartSuccess: false,
             loading: true,
             cart: null,
+            quantity: 1,
+            selectedColorId: null,
         };
     },
     computed: {
@@ -105,12 +119,29 @@ export default {
         }
     },
     methods: {
-        addToCart() {
-            return addItemToCart(this.cart, {
+        async addToCart() {
+            if (this.product.colors.length && this.selectedColorId == null) {
+                alert('Please select a color first!');
+
+                return;
+            }
+
+            this.addToCartLoading = true;
+            this.addToCartSuccess = false;
+
+            await addItemToCart(this.cart, {
                 product: this.product['@id'],
-                color: null,
-                quantity: 1,
+                color: this.selectedColorId,
+                quantity: this.quantity,
             });
+
+            this.addToCartLoading = false;
+            this.addToCartSuccess = true;
+
+            document.getElementById('js-shopping-cart-items').innerHTML = getCartTotalItems(this.cart).toString();
+        },
+        updateSelectedColor(iri) {
+            this.selectedColorId = iri;
         },
     },
 };

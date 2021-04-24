@@ -4,6 +4,12 @@
     <div id="app"></div>
 {% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+
+    {{ encore_entry_link_tags('products') }}
+{% endblock %}
+
 {% block javascripts %}
     {{ parent() }}
 
@@ -24,10 +30,4 @@
     </script>
 
     {{ encore_entry_script_tags('products') }}
-{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-
-    {{ encore_entry_link_tags('products') }}
 {% endblock %}

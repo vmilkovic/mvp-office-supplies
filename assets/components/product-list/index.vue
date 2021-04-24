@@ -23,7 +23,7 @@
 
 <script>
 import ProductCard from '@/components/product-list/product-card';
-import Loading from '@/components/loading.vue';
+import Loading from '@/components/loading';
 
 export default {
     name: 'ProductList',
