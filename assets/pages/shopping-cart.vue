@@ -17,17 +17,49 @@
             </aside>
 
             <div class="col-xs-12 col-lg-9">
-                <title-component text="Shopping Cart" />
+                <transition
+                    name="fade"
+                    mode="out-in"
+                >
+                    <title-component
+                        :key="currentState"
+                        :text="pageTitle"
+                    />
+                </transition>
 
                 <div class="content p-3">
                     <loading v-show="completeCart === null" />
 
-                    <shopping-cart-list
-                        v-if="completeCart"
-                        :items="completeCart.items"
-                        @update-quantity="updateQuantity"
-                        @remove-from-cart="removeProductFromCart($event.productId, $event.colorId)"
-                    />
+                    <transition
+                        name="fade"
+                        mode="out-in"
+                    >
+                        <shopping-cart-list
+                            v-if="completeCart && currentState === 'cart'"
+                            :items="completeCart.items"
+                            @update-quantity="updateQuantity"
+                            @remove-from-cart="removeProductFromCart(
+                                $event.productId,
+                                $event.colorId
+                            )"
+                        />
+
+                        <checkout-form
+                            v-if="completeCart && currentState === 'checkout'"
+                            :cart="cart"
+                        />
+                    </transition>
+
+                    <div
+                        v-if="completeCart && completeCart.items.length > 0"
+                    >
+                        <button
+                            class="btn btn-primary"
+                            @click="switchState"
+                        >
+                            {{ buttonText }}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -42,6 +74,7 @@ import ShoppingCartList from '@/components/shopping-cart';
 import { fetchProductsById, fetchFeaturedProducts } from '@/services/products-service';
 import { fetchColors } from '@/services/colors-service';
 import CartSidebar from '@/components/shopping-cart/cart-sidebar';
+import CheckoutForm from '@/components/checkout';
 
 export default {
     name: 'ShoppingCart',
@@ -50,10 +83,12 @@ export default {
         Loading,
         ShoppingCartList,
         CartSidebar,
+        CheckoutForm,
     },
     mixins: [ShoppingCartMixin],
     data() {
         return {
+            currentState: 'cart',
             products: null,
             colors: null,
             featuredProduct: null,
@@ -82,6 +117,12 @@ export default {
                 items: completeItems.filter((item) => item.product),
             };
         },
+        pageTitle() {
+            return this.currentState === 'cart' ? 'Shopping Cart' : 'Checkout';
+        },
+        buttonText() {
+            return this.currentState === 'cart' ? 'Check Out >>' : '<< Back';
+        },
     },
     watch: {
         'cart.items.length': function watchCartItemsLength() {
@@ -93,6 +134,9 @@ export default {
         this.colors = (await fetchColors()).data['hydra:member'];
     },
     methods: {
+        switchState() {
+            this.currentState = this.currentState === 'cart' ? 'checkout' : 'cart';
+        },
         async loadProducts() {
             const productIds = this.cart.items.map((item) => item.product);
             const productsResponse = await fetchProductsById(productIds);
@@ -121,6 +165,14 @@ export default {
 .component :global {
     .content {
         @include light-component;
+    }
+
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .2s;
+    }
+
+    .fade-enter, .fade-leave-to {
+        opacity: 0;
     }
 }
 </style>
