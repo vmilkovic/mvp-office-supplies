@@ -23,11 +23,17 @@ export function fetchProducts(categoryIri, searchTerm) {
     });
 }
 
+export function fetchFeaturedProducts() {
+    return axios.get('/api/products', {
+        params: { featured: 1 },
+    });
+}
+
 /**
  * Get a product from API
  *
  * @param {string} iri
- * @returns {Promise}
+ * @return {Promise}
  */
 export function fetchOneProduct(iri) {
     return axios.get(iri);
